@@ -63,7 +63,7 @@ python manage.py runserver
 Abra su navegador en:
 
 ```
-http://127.0.0.1:8000/diario/lista/
+http://127.0.0.1:8000/crear-perfil/
 ```
 
 > **Nota:** la ruta raíz (`/`) no tiene una vista asignada en este proyecto, por lo que se debe entrar directamente a `/diario/lista/` o a cualquiera de las rutas listadas abajo.
