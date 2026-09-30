@@ -1,0 +1,116 @@
+{% load widget_tweaks %}
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+    .font-poppins { font-family: 'Poppins', sans-serif; }
+</style>
+
+<div class="min-h-screen flex items-center justify-center bg-purple-50 py-12 px-4 font-poppins">
+    <div class="w-full max-w-2xl bg-white rounded-2xl shadow-xl shadow-purple-200/60 border border-purple-100 overflow-hidden">
+
+        <div class="h-1.5 bg-gradient-to-r from-purple-300 via-purple-500 to-purple-300 bg-[length:200%_100%] animate-[shimmer_3s_linear_infinite]"></div>
+
+        <div class="p-8 sm:p-10">
+            <div class="mb-8">
+                <h2 class="text-2xl font-semibold text-purple-900">
+                    {% if form.instance.pk %}Editar entrada{% else %}Nueva entrada{% endif %}
+                </h2>
+                <p class="text-sm text-purple-400 mt-1">
+                    Escribe lo que quieras recordar de hoy
+                </p>
+            </div>
+
+            <form method="post" class="space-y-5">
+                {% csrf_token %}
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    {% for field in form %}
+                        {% if field.name != 'contenido' %}
+                            <div>
+                                <label for="{{ field.id_for_label }}"
+                                       class="block text-sm font-medium text-purple-700 mb-1.5">
+                                    {{ field.label }}
+                                </label>
+
+                                {% if field.errors %}
+                                    {% render_field field class="w-full border-2 border-red-300 bg-red-50 rounded-lg px-4 py-2.5 text-purple-900 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition duration-150" %}
+                                {% else %}
+                                    {% render_field field class="w-full border-2 border-purple-100 rounded-lg px-4 py-2.5 text-purple-900 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 hover:border-purple-200 transition duration-150" %}
+                                {% endif %}
+
+                                {% if field.errors %}
+                                    <p class="text-xs text-red-500 font-medium mt-1">{{ field.errors|striptags }}</p>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                {% for field in form %}
+                    {% if field.name == 'contenido' %}
+                        <div>
+                            <div class="flex items-center justify-between mb-1.5">
+                                <label for="{{ field.id_for_label }}"
+                                       class="block text-sm font-medium text-purple-700">
+                                    {{ field.label }}
+                                </label>
+                                <span id="contador-caracteres" class="text-xs text-purple-300">0 caracteres</span>
+                            </div>
+
+                            {% if field.errors %}
+                                {% render_field field rows="7" class="w-full border-2 border-red-300 bg-red-50 rounded-lg px-4 py-2.5 text-purple-900 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-red-400 focus:border-red-400 transition duration-150 resize-none" %}
+                            {% else %}
+                                {% render_field field rows="7" class="w-full border-2 border-purple-100 rounded-lg px-4 py-2.5 text-purple-900 placeholder-purple-300 focus:outline-none focus:ring-2 focus:ring-purple-400 focus:border-purple-400 hover:border-purple-200 transition duration-150 resize-none" %}
+                            {% endif %}
+
+                            {% if field.errors %}
+                                <p class="text-xs text-red-500 font-medium mt-1">{{ field.errors|striptags }}</p>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                {% endfor %}
+
+                <div class="flex justify-end gap-3">
+                    <a href="{% url 'diario_list' %}"
+                       class="border-2 border-purple-200 text-purple-700 font-medium
+                              py-2.5 px-5 rounded-lg hover:border-purple-300 hover:bg-purple-50
+                              transition duration-150">
+                        Cancelar
+                    </a>
+                    <button type="submit"
+                            class="bg-purple-600 hover:bg-purple-700 active:scale-[0.98] text-white font-medium
+                                   py-2.5 px-6 rounded-lg transition duration-150 shadow-md shadow-purple-300
+                                   hover:shadow-lg hover:shadow-purple-400">
+                        {% if form.instance.pk %}Guardar cambios{% else %}Guardar entrada{% endif %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+    @keyframes shimmer {
+        0% { background-position: 200% 0; }
+        100% { background-position: -200% 0; }
+    }
+</style>
+
+<script>
+    (function () {
+        const textarea = document.querySelector('textarea[name="contenido"]');
+        const contador = document.getElementById('contador-caracteres');
+        if (textarea && contador) {
+            const actualizar = () => {
+                contador.textContent = textarea.value.length + ' caracteres';
+            };
+            textarea.addEventListener('input', actualizar);
+            actualizar();
+        }
+    })();
+</script>
